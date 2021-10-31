@@ -1,0 +1,12 @@
+Background {
+    pointer-events: all;
+    z-index: -1;
+    display: flex;
+    position: absolute;
+    min-width: 125px;
+    min-height: 125px;
+    width: 100%;
+    height: 100%;
+    background-image: url("UI/Images/background_darktheme.png");
+    background-size: contain;
+}

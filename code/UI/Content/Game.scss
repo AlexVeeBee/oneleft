@@ -1,0 +1,67 @@
+UiGameContent {
+    left: 0px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+.main-container {
+    left: 0px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .top {
+        width: 100%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+
+        InGamePlayers {
+            width: 100%;
+            display: flex;
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    .Center {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        justify-items: center;
+        align-content: center;
+        align-items: center;
+
+        .inner-Center {
+            flex-direction: column;
+            background: linear-gradient(to right,#CC003100,rgba(204,0,49,0.44),#CC003100);
+            width: 60%;
+            position: absolute;
+            justify-content: center;
+            align-items: center;
+            padding: 12px 0px;
+
+            .outline {
+                position: absolute;
+                bottom: 0px;
+                margin-top: 12px;
+                background: linear-gradient(to right,#CC003100,rgba(204,0,49,1),#CC003100);
+                height: 6px;
+                width: 100%;
+            }
+        }
+    }
+
+    .Bottom {
+        position: absolute;
+        width: 100%;
+        display: flex;
+        bottom: 0px;
+    }
+}

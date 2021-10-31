@@ -1,0 +1,58 @@
+text, .text {
+}
+.plr {
+    max-width: 600px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin: 12px;
+    border-radius: 10px;
+
+    .plr_avatar {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        min-width: 72px;
+        min-height: 72px;
+        border: 5px solid #8D0022;
+    }
+
+    .NameConatiner {
+        //background-color: #CC0031;
+        //border-top-right-radius: 10px;
+        //border-bottom-right-radius: 10px;
+        background: linear-gradient(to right, #CC0031, #CC003100);
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        //border: 5px solid #8D0022;
+        border-left: none;
+
+        .plr_name {
+            margin-left: 24px;
+            color: white;
+            font-size: 25px;
+        }
+
+        .outline-top {
+            width: 100%;
+            min-height: 5px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            background: linear-gradient(to right, #8D0022, #CC003100);
+        }
+
+        .outline-bottom {
+            width: 100%;
+            min-height: 5px;
+            position: absolute;
+            left: 0px;
+            bottom: 0px;
+            background: linear-gradient(to right, #8D0022, #CC003100);
+            //background-color: #8D0022;
+        }
+    }
+}
+.Players {
+}

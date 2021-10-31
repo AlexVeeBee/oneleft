@@ -1,0 +1,50 @@
+$background-color-normal: #9B0025;
+$background-color-ready: #235828;
+
+$border-color-normal: #7E001F;
+$border-color-ready: #007E0D;
+
+.Player_container_style {
+    padding: 0px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+
+
+    .player {
+        &.ready {
+            border: 5px solid $border-color-ready;
+            background-color: $background-color-ready;
+            box-shadow: 0px 0px 12px 6px #235828;
+
+            .plrImage {
+                border: 5px solid $border-color-ready;
+            }
+        }
+
+        transition: box-shadow 0.3s ease, background-color 0.2s ease,border 0.2s ease;
+        padding: 3px;
+        background-color: $background-color-normal;
+        color: white;
+        width: 412px;
+        text-align: center;
+        align-items: center;
+        border: 5px solid $border-color-normal;
+        border-radius: 6px;
+        margin-bottom: 5px;
+        font-size: 24px;
+
+        .plrImage {
+            transition: border 0.1s ease;
+            height: 52px;
+            width: 52px;
+            border-radius: 11px;
+            border: 5px solid $border-color-normal;
+        }
+
+        .plrname {
+            margin-left: 12px;
+        }
+    }
+}
