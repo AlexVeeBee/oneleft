@@ -23,7 +23,7 @@ namespace OneLeft.UI.Menu.ReadyPlayers
 			Client = cl;
 
 			MainPanel = Add.Panel( $"player plr-{cl.Name}" );
-			Avatar = MainPanel.Add.Image( $"avatarbig:{cl.SteamId}", "plrImage" );
+			Avatar = MainPanel.Add.Image( $"avatarbig:{cl.PlayerId }", "plrImage" );
 			NameLabel = MainPanel.Add.Label( $"{cl.Name}", "plrname" );
 		}
 

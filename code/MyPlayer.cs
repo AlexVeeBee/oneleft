@@ -5,7 +5,6 @@ public class FloatingCamera : Camera
 	{
 		var Pawn = Local.Pawn;
 
-		Pos = new Vector3( 0,128,60 );
 
 		FieldOfView = 80;
 
@@ -27,7 +26,8 @@ partial class MyPlayer : Player
 		// Use ThirdPersonCamera (you can make your own Camera for 100% control)
 		//Camera = new ThirdPersonCamera();
 
-		Camera = new FloatingCamera();
+		
+		//Camera = new FloatingCamera();
 
 		EnableAllCollisions = true;
 		EnableDrawing = true;

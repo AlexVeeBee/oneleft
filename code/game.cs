@@ -1,7 +1,8 @@
+using System;
 using Sandbox;
 using System.Collections.Generic;
 
-using OneLeft.UI.Chat;
+//using OneLeft.UI.Chat;
 using OneLeft_UI.UI.Game.MainUI.Table;
 
 namespace OneLeft_game
@@ -86,7 +87,24 @@ namespace OneLeft_game
 
 	public partial class OneLeftGAME : Game
 	{
+
+		private static string[] COLOR_CARDS_IDS = new string[]
+		{
+			"R",
+			"Y",
+			"G",
+			"B",
+		};
+
+		[Net] public static int clID_turn{ get; set; } = 1;
+
 		[Net] public static bool GameRunning { get; set; } = false;
+
+		[Net] public static int gamecard_co { get; set; } = 0;
+		[Net] public static int gamecard_ca { get; set; } = 0;
+
+		[Net] public static bool ColorSWitchMode { get; set; } = false;
+		[Net] public static bool RevesCard { get; set; } = false;
 
 		[ServerCmd]
 		public static void StartGame()
@@ -114,11 +132,19 @@ namespace OneLeft_game
 					foreach ( var cl in Client.All )
 					{
 						Log.Info( $"VALUE UPDATE TO {cl.Name}" );
-						cl.SetValue( "UI.CardView_co", 0 );
-						cl.SetValue( "UI.CardView_ca", 0 );
+
+						Random rand = new Random();
+						int num_col = rand.Next( 0, 4 );
+						int num_card = rand.Next( 0, 13 );
+
+						cl.SetValue( "UI.CardView_co", num_col );
+						cl.SetValue( "UI.CardView_ca", num_card );
+
+						gamecard_co = num_col;
+						gamecard_ca = num_card;
+
 						cl.SetValue( "UI.UPDATE", true );
 						Log.Info( $"VALUE UPDATE TO {cl.Name} SUCCESS" );
-						cl.SendCommandToClient( "UPDATE_TABLE_CARD" );
 						Log.Info( $"=================" );
 					}
 					Event.Run( "UPDATE_TABLE_CARD" );
@@ -161,6 +187,7 @@ namespace OneLeft_game
 			}
 		}
 
+//		-----------// PLACE CARD // -----------
 		[ServerCmd]
 		public static void TossCard( int cardColorId, int cardNumer_spacialId)
 		{
@@ -171,17 +198,94 @@ namespace OneLeft_game
 				Log.Info( $"VALUE UPDATE TO {cl.Name}");
 				cl.SetValue( "UI.CardView_co", cardColorId );
 				cl.SetValue( "UI.CardView_ca", cardNumer_spacialId );
+				
+				if ( cardNumer_spacialId == 0 || cardNumer_spacialId == 2 )
+				{
+					cl.SetValue( "UI.CardView_co_b", cardColorId );
+					//cl.SetValue( "UI.CardView_ca_b", cardNumer_spacialId );
+
+					// COLOR SWITCH
+						
+					cl.SetValue( "UI.CardView_co_cw", -1 );
+
+					cl.SetValue( "UI.COLORCARDS", true);
+					ColorSWitchMode = true;
+				} else
+				{
+					cl.SetValue( "UI.COLORCARDS", false );
+					ColorSWitchMode = false;
+				}
+				if ( cardNumer_spacialId == 1)
+				{
+					if ( RevesCard )
+					{
+						RevesCard = false;
+						Log.Info( "Turn direction: NORMAL" );
+					}
+					else
+					{
+						RevesCard = true;
+						Log.Info( "Turn direction: REVERSEED" );
+					}
+					Log.Info( "REVERSE: " + RevesCard );
+					Log.Info( "UI.CardView_co: " + cl.GetValue( "UI.CardView_co", cardColorId ) );
+				}
 
 				Log.Info( "UI.CardView_co: " + cl.GetValue( "UI.CardView_co", cardColorId ) );
 				Log.Info( "UI.CardView_ca: " + cl.GetValue( "UI.CardView_ca", cardNumer_spacialId ) );
+				
+				gamecard_co = cardColorId;
+				gamecard_ca = cardNumer_spacialId;
 
 				cl.SetValue( "UI.UPDATE", true );
 
 				Log.Info( $"VALUE UPDATE TO {cl.Name} SUCCESS");
-				cl.SendCommandToClient( "UPDATE_TABLE_CARD" );
 				Log.Info( $"=================");
 			}
 			Event.Run( "UPDATE_TABLE_CARD" );
+		}
+
+//		-----------// COLOR SWITCH // -----------
+		[ServerCmd]
+		public static void ColorSwitch( int cardColorId )
+		{
+			var cl_C = ConsoleSystem.Caller;
+			Log.Info( "CALLER: "+ cl_C.UserId );
+			Log.Info( "TURN: " + clID_turn );
+			if ( cl_C.UserId == clID_turn ) {
+				Log.Info( "CARD COLOR" + cardColorId );
+				foreach ( var cl in Client.All )
+				{
+					if ( ColorSWitchMode == true ) {
+						// COLOR SWITCH NOW
+						cl.SetValue( "UI.CardView_co_cw", cardColorId );
+
+						cl.SetValue( "UI.COLORCARDS", true );
+						ColorSWitchMode = true;
+						Log.Info( COLOR_CARDS_IDS[cardColorId] );
+					}
+					else
+					{
+						cl.SetValue( "UI.CardView_co_cw", -1 );
+						cl.SetValue( "UI.COLORCARDS", false );
+						ColorSWitchMode = false;
+					}
+
+					Log.Info( "UI.CardView_co_cw: " + cl.GetValue( "UI.CardView_co_cw", cardColorId ) );
+
+					gamecard_co = cardColorId;
+
+					cl.SetValue( "UI.UPDATE", true );
+
+					Log.Info( $"VALUE UPDATE TO {cl.Name} SUCCESS" );
+					Log.Info( $"=================" );
+				}
+				Event.Run( "UPDATE_TABLE_CARD" );
+			} else
+			{
+				Log.Info( "Nothing was affected" );
+				Log.Warning( $"its not {cl_C.Name} turn" );
+			}
 		}
 	}
 }

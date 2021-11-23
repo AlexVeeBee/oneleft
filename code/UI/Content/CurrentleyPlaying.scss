@@ -32,6 +32,18 @@ text, .text {
             margin-left: 24px;
             color: white;
             font-size: 25px;
+            font-family: Montserrat;
+            font-weight: 600;
+            text-shadow: 2px 2px 0px black;
+            outline-style: solid;
+            outline-color: black;
+            outline-width: 15px;
+
+            textpanel {
+                outline-style: solid;
+                outline-color: black;
+                outline-width: 15px;
+            }
         }
 
         .outline-top {
@@ -50,7 +62,6 @@ text, .text {
             left: 0px;
             bottom: 0px;
             background: linear-gradient(to right, #8D0022, #CC003100);
-            //background-color: #8D0022;
         }
     }
 }

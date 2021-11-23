@@ -7,6 +7,26 @@ Background {
     min-height: 125px;
     width: 100%;
     height: 100%;
-    background-image: url("UI/Images/background_darktheme.png");
     background-size: contain;
+
+    .b {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        //background-color: rgba(0,0,0,0.9);
+    }
+
+    .canvas {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+b1 {
+    background-image: url("UI/Images/Backgrounds/BACKGROUND_TEST.png");
+}
+
+.text {
+    color: white;
+    background-color: blue;
 }

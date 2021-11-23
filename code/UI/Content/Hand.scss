@@ -24,20 +24,39 @@
         align-items: flex-end;
         backdrop-color: none;
         transition: opacity 0.3s ease;
-        opacity: 0.5;
         margin-bottom: 20px;
 
         .HandCard {
             box-shadow: 0px 0px 0p x 0px rgba(141,0,34,0);
             overflow: visible;
-            transition: width 0.3s ease, height 0.3s ease, box-shadow 0.1s ease, transform 0.2s ease-out, bottom 0.2s ease-out, min-width 0.2s ease-out, min-height 0.2s ease-out;
+            transition: opacity 0.3s ease, margin-left 0.3s ease, margin-right 0.3s ease, top 0.3s ease, width 0.3s ease, height 0.3s ease, box-shadow 0.1s ease, transform 0.2s ease-out, bottom 0.2s ease-out, min-width 0.2s ease-out, min-width 0.2s ease, min-height 0.2s ease-out;
             position: relative;
             width: 95px;
             height: 133px;
             min-width: 0px;
             min-height: 0px;
             pointer-events: none;
+            opacity: 0.5;
             //transform: scale(1.5);
+
+            &:intro {
+                top: 300px;
+                margin-left: -95px;
+            }
+
+            &:outro {
+                top: 0px;
+                margin-left: 0px;
+            }
+
+            &.NotClickable {
+                transition: margin-right: 0.3s ease, opacity 0.3s ease, transform 0s ease,width 0s ease, min-width 0s ease;
+                transform: scale(1);
+                top: -300px;
+                opacity: 0;
+                margin-right: -95px;
+            }
+
             &:Hover {
                 transition: min-width 0.1s ease-out, min-height 0.1s ease-out box-shadow 0.1s ease, transform 0.1s ease, bottom 0.1s ease;
                 z-index: 2;
@@ -68,6 +87,29 @@
                 pointer-events: all;
                 width: 129px;
                 height: 181px;
+                transition: opacity 0.6s ease, margin-left 0.3s ease, margin-right 0.3s ease;
+
+                &:intro {
+                    top: 300px;
+                    margin-right: -64px;
+                    margin-left: -64px;
+                }
+
+                &:outro {
+                    top: 0px;
+                    margin-right: 0px;
+                    margin-left: 0px;
+                }
+
+
+                &.NotClickable {
+                    transition: margin-left 0.3s ease, margin-right 0.3s ease,opacity 0.3s ease, width 0.3s ease, top 0.4s ease;
+                    top: -300px !important;
+                    pointer-events: none;
+                    opacity: 0;
+                    margin-right: -64px;
+                    margin-left: -64px;
+                }
             }
 
             opacity: 1;

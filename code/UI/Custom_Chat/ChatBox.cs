@@ -1,44 +1,57 @@
-﻿
-using Sandbox;
-using Sandbox.Hooks;
+﻿using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
-using System;
 
 namespace OneLeft.UI.Chat
 {
-	public partial class C_ChatBox : Panel
+	public partial class ChatBox : Panel
 	{
-		static C_ChatBox Current;
-
+		static ChatBox Current;
 		public Panel Canvas { get; protected set; }
-		public TextEntry Input { get; protected set; }
+		public Panel InnerCanvas { get; protected set; }
 
-		public C_ChatBox()
+		public Panel InputField_con { get; protected set; }
+		public TextEntry Input { get; protected set; }
+		int msgCount = 0;
+		public ChatBox()
 		{
 			Current = this;
-
 			StyleSheet.Load( "/UI/Custom_Chat/ChatBox.scss" );
 
 			Canvas = Add.Panel( "chat_canvas" );
+			InnerCanvas = Canvas.Add.Panel( "Inner_chat_canvas" );
+			Canvas.PreferScrollToBottom = true;
 
-			Input = Add.TextEntry( "" );
+			InputField_con = Add.Panel("InputContainer");
+
+			Input = InputField_con.Add.TextEntry( "" );
 			Input.AddEventListener( "onsubmit", () => Submit() );
 			Input.AddEventListener( "onblur", () => Close() );
 			Input.AcceptsFocus = true;
 			Input.AllowEmojiReplace = true;
 
-			s_Sandbox.Hooks.Chat.OnOpenChat += Open;
+			Canvas.Add.Panel( "outine_top" );
+			Canvas.Add.Panel( "outine_bottom" );
+
+			Sandbox.Hooks.Chat.OnOpenChat += Open;
 		}
 
+		public override void Tick()
+		{
+			//Input.CaretColor = new Color( 0.1714f, 0.831f, 0.5292f );
+
+			base.Tick();
+		}
 		void Open()
 		{
+			Log.Info( "CHAT OPEN" );
 			AddClass( "open" );
 			Input.Focus();
 		}
 
 		void Close()
 		{
+			Log.Info( "CHAT CLOSE" );
 			RemoveClass( "open" );
 			Input.Blur();
 		}
@@ -46,51 +59,55 @@ namespace OneLeft.UI.Chat
 		void Submit()
 		{
 			Close();
+			Log.Info( "CHAT CLOSE SUBMIT" );
 
 			var msg = Input.Text.Trim();
 			Input.Text = "";
 
+			Log.Info( $"CHAT: {msg} Length: {msg.Length}" );
+
 			if ( string.IsNullOrWhiteSpace( msg ) )
 				return;
 
-			if ( Global.Lobby != null )
-			{
-				Log.Info( "Send Chat" );
-				Global.Lobby?.SendChat( msg );
-			}
-			else
-			{
-				Say( msg );
-			}
+			Say( msg );
 		}
 
-		public void AddEntry( string name, string message, string avatar, string lobbyState = null )
+		public void AddEntry( string name, string message, string avatar )
 		{
-			var e = Canvas.AddChild<C_ChatEntry>();
-			
+			msgCount++;
+			var e = Canvas.AddChild<ChatEntry>();
+			//e.SetFirstSibling();
 			e.Message.Text = message;
 			e.NameLabel.Text = name;
 			e.Avatar.SetTexture( avatar );
 
 			e.SetClass( "noname", string.IsNullOrEmpty( name ) );
 			e.SetClass( "noavatar", string.IsNullOrEmpty( avatar ) );
-
-			if ( lobbyState == "ready" || lobbyState == "staging" )
-			{
-				e.SetClass( "is-lobby", true );
-			}
+			ScrollToBottom();
 		}
 
+		// TODO: Maybe needs to be networked or check for other peoples messages 
+		private async void ScrollToBottom()
+		{
+			if ( !Canvas.IsScrollAtBottom )
+			{
+				Canvas.TryScroll( 5 );
+				await Task.Delay( 100 );
+				ScrollToBottom();
+
+			}
+			return;
+		}
 
 		[ClientCmd( "chat_add", CanBeCalledFromServer = true )]
-		public static void AddChatEntry( string name, string message, string avatar = null, string lobbyState = null )
+		public static void AddChatEntry( string name, string message, string avatar = null )
 		{
-			Current?.AddEntry( name, message, avatar, lobbyState );
+			Current?.AddEntry( name, message, avatar );
 
 			// Only log clientside if we're not the listen server host
 			if ( !Global.IsListenServer )
 			{
-				Log.Info( $"{name}: {message}" ); 
+				Log.Info( $"{name}: {message}" );
 			}
 		}
 
@@ -98,6 +115,12 @@ namespace OneLeft.UI.Chat
 		public static void AddInformation( string message, string avatar = null )
 		{
 			Current?.AddEntry( null, message, avatar );
+		}
+
+		[ClientCmd( "chat_twitch", CanBeCalledFromServer = true )]
+		public static void AddTwitch( string user, string message )
+		{
+			Current?.AddEntry( user, message, "ui/twitch.jpg" );
 		}
 
 		[ServerCmd( "say" )]
@@ -110,32 +133,11 @@ namespace OneLeft.UI.Chat
 				return;
 
 			Log.Info( $"{ConsoleSystem.Caller}: {message}" );
-			AddChatEntry( To.Everyone, ConsoleSystem.Caller.Name, message, $"avatar:{ConsoleSystem.Caller.SteamId}" );
+			AddChatEntry( To.Everyone, $"{ConsoleSystem.Caller.Name}", message, $"avatar:{ConsoleSystem.Caller.PlayerId }" );
 		}
 
-		[Event( "lobby.chat" )]
-		public static void LobbyChat( Friend friend, string message )
-		{
-			if ( !Host.IsServer ) return;
-
-			Log.Info( $"Lobby Chat: {message}" );
-			AddChatEntry( To.Everyone, friend.Name, message, $"avatar:{friend.Id}", Global.Lobby?.GetMemberData( friend, "status" ) );
-		}
 
 	}
+
 }
 
-namespace s_Sandbox.Hooks
-{
-	public static partial class Chat
-	{
-		public static event Action OnOpenChat;
-
-		[ClientCmd( "openchat" )]
-		internal static void MessageMode()
-		{
-			OnOpenChat?.Invoke();
-		}
-
-	}
-}

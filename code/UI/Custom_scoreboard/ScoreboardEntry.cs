@@ -10,8 +10,6 @@ namespace Sandbox.UI
 {
 	public partial class Custom_ScoreboardEntry : Panel
 	{
-		[Obsolete]
-		public PlayerScore.Entry Entry;
 
 		public Client Client;
 
@@ -61,9 +59,5 @@ namespace Sandbox.UI
 			Client = client;
 			UpdateData();
 		}
-
-
-		[Obsolete( "Switch to the Client version" )]
-		public virtual void UpdateFrom( PlayerScore.Entry entry ) { }
 	}
 }

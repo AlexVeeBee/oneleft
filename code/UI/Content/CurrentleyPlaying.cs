@@ -14,23 +14,28 @@ namespace OneLeft.UI.Game.MainUI.Top_Players
 	public partial class Player_Renderer : Panel
 	{
 		public Client Client { get; set; }
-		private Panel NamePanel;
-		public Label NameLabel;
-		public Image Avatar;
 		private Panel MainPanel;
+		private Panel NamePanel;
+		public Image Avatar;
+		public Label NameLabel;
+		public Label CardsLabel;
 
 		public Player_Renderer( Client cl )
 		{
 			Client = cl;
 
 			MainPanel = Add.Panel( $"plr plr-{cl.Name}" );
-			Avatar = MainPanel.Add.Image( $"avatarbig:{cl.SteamId}", "plr_avatar" );
+			Avatar = MainPanel.Add.Image( $"avatarbig:{cl.PlayerId }", "plr_avatar" );
 			NamePanel = MainPanel.Add.Panel( "NameConatiner" );
-			//.outline-top
 				NameLabel = NamePanel.Add.Label( $"{cl.Name}", "plr_name" );
 				NamePanel.Add.Panel( "outline-top " );
 				NamePanel.Add.Panel( "outline-bottom" );
-				//.outline-bottom
+				CardsLabel = NamePanel.Add.Label( "LOL", "plr_name" );
+		}
+
+		public override void Tick()
+		{
+			//CardsLabel.Text = Client.GetValue<int>( "plr.totalCards", Client.GetValue<int>( "plr.totalCards" , 0 ) ).ToString();
 		}
 	}
 	public partial class InGamePlayers : Panel
